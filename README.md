@@ -1,6 +1,6 @@
 # Capstone
 
-Context and Objective:
+Objective:
 
 The project is working on Expedia Hotel Recommendation competition in Kaggle web site: https://www.kaggle.com/c/expedia-hotel-recommendations . 
 It will be the answer of the following question research :Which hotel type will an Expedia customer book?
