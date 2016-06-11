@@ -1,0 +1,19 @@
+
+select user_location_country ,Ismobile  from
+(select user_location_country as user_location_country ,is_mobile as is_mobile, count(*) as Ismobile
+from train_1  where is_mobile = '1'
+group by  user_location_country,is_mobile) order by Ismobile desc limit 10;
+
+select user_location_country ,IsNotmobile  from
+(select user_location_country as user_location_country ,is_mobile as is_mobile, count(*) as IsNotmobile
+from train_1  where is_mobile = '0'
+group by  user_location_country,is_mobile) order by IsNotmobile desc limit 10;
+
+
+select user_id, hotel_cluster , (3+ 17*is_booking + cnt) score from 
+(select user_id user_id, hotel_cluster  hotel_cluster , sum(is_booking) is_booking , sum(cnt) cnt
+from train_1
+group by user_id , hotel_cluster) ;
+
+
+
