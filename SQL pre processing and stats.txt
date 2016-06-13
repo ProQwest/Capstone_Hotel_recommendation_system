@@ -1,19 +1,59 @@
 
-select user_location_country ,Ismobile  from
-(select user_location_country as user_location_country ,is_mobile as is_mobile, count(*) as Ismobile
-from train_1  where is_mobile = '1'
-group by  user_location_country,is_mobile) order by Ismobile desc limit 10;
+/*----- to load data in Hive -----
+create table Train_1  
+		(date_time string,
+		site_name int,
+		site_name int,
+		user_location_country int,
+		user_location_region int,
+		user_location_city int,
+		orig_destination_distance double,
+		user_id int,
+		is_mobile tinyint,
+		is_package int,
+		channel int,
+		srch_ci string,
+		srch_co string,
+		srch_adults_cnt int,
+		srch_children_cnt int,
+		srch_rm_cnt int,
+		srch_destination_id int,
+		srch_destination_type_id int,
+		hotel_continent int,
+		hotel_country int,
+		hotel_market int,
+		is_booking tinyint,
+		cnt bigint,
+		hotel_cluster int)
+row format delimited fields terminated by ',' ;
+load data inpath '/user/root/capstone/train_1.csv' overwrite into table Train_1 ;
 
-select user_location_country ,IsNotmobile  from
-(select user_location_country as user_location_country ,is_mobile as is_mobile, count(*) as IsNotmobile
-from train_1  where is_mobile = '0'
-group by  user_location_country,is_mobile) order by IsNotmobile desc limit 10;
+------top ten booking by mobile and user_location_country ---
+SELECT user_location_country ,Ismobile
+ FROM
+         (SELECT user_location_country AS user_location_country ,is_mobile AS is_mobile, count(*) AS Ismobile
+             FROM train_1 WHERE is_mobile = '1'
+         GROUP BY user_location_country,is_mobile)
+ORDER BY Ismobile DESC LIMIT 10;
+------top ten not booking by mobile and user_location_country ---
+SELECT user_location_country ,IsNotmobile 
+FROM
+    (SELECT user_location_country AS user_location_country ,is_mobile AS is_mobile, count(*) AS IsNotmobile
+       FROM train_1 WHERE is_mobile = '0'
+   GROUP BY user_location_country,is_mobile) 
+ORDER BY IsNotmobile DESC LIMIT 10; 
 
 
-select user_id, hotel_cluster , (3+ 17*is_booking + cnt) score from 
-(select user_id user_id, hotel_cluster  hotel_cluster , sum(is_booking) is_booking , sum(cnt) cnt
-from train_1
-group by user_id , hotel_cluster) ;
+
+--------creation train set ---------------------------------
+
+
+select user_id ,hotel_cluster, is_booking + (1-is_booking)*0.15*numbclick as score 
+from
+    (SELECT user_id user_id , hotel_cluster hotel_cluster , is_booking is_booking, count(*) as numbclick
+     FROM train
+     group by user_id, hotel_cluster , is_booking) 
+
 
 
 
